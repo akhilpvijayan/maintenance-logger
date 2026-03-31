@@ -8,7 +8,6 @@ export async function PATCH(
   try {
     const { id } = await params;
     const { status } = await req.json();
-    const id = (await params).id;
     const validStatuses = ['Open', 'In Progress', 'Resolved'];
 
     if (!validStatuses.includes(status)) {
