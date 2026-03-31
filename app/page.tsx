@@ -2,7 +2,9 @@
 
 import Dashboard from '@/components/Dashboard';
 import SubmitForm from '@/components/SubmitForm';
+import ThemeToggle from '@/components/ThemeToggle';
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function Home() {
   const [activeView, setActiveView] = useState<'submit' | 'dashboard'>('submit');
@@ -53,7 +55,7 @@ export default function Home() {
             </div>
             <span
               style={{
-                fontFamily: 'Syne, sans-serif',
+                fontFamily: 'Rajdhani, sans-serif',
                 fontWeight: 700,
                 fontSize: 18,
                 letterSpacing: '-0.3px',
@@ -63,7 +65,8 @@ export default function Home() {
             </span>
           </div>
 
-          {/* Nav Tabs */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {/* Nav Tabs */}
           <div
             style={{
               display: 'flex',
@@ -83,7 +86,7 @@ export default function Home() {
                   borderRadius: 7,
                   border: 'none',
                   cursor: 'pointer',
-                  fontFamily: 'Syne, sans-serif',
+                  fontFamily: 'Rajdhani, sans-serif',
                   fontWeight: 600,
                   fontSize: 13,
                   transition: 'all 0.2s',
@@ -98,19 +101,31 @@ export default function Home() {
               </button>
             ))}
           </div>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
       {/* Content */}
-      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 24px' }}>
-        {activeView === 'submit' ? (
-          <SubmitForm
-            onSubmitted={handleIssueSubmitted}
-            onViewDashboard={() => setActiveView('dashboard')}
-          />
-        ) : (
-          <Dashboard key={refreshKey} />
-        )}
+      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 24px', position: 'relative' }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeView}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.3 }}
+          >
+            {activeView === 'submit' ? (
+              <SubmitForm
+                onSubmitted={handleIssueSubmitted}
+                onViewDashboard={() => setActiveView('dashboard')}
+              />
+            ) : (
+              <Dashboard key={`dashboard-${refreshKey}`} />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );

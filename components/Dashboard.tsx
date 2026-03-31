@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Issue, Status, Urgency } from '@/types/issue';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 
 const PROPERTIES = [
   'All Properties',
@@ -15,15 +17,15 @@ const PROPERTIES = [
 const URGENCY_OPTIONS = ['All', 'Low', 'Medium', 'High'];
 
 const urgencyColors: Record<Urgency, { bg: string; text: string; dot: string }> = {
-  Low: { bg: 'rgba(34,197,94,0.12)', text: '#22c55e', dot: '#22c55e' },
-  Medium: { bg: 'rgba(234,179,8,0.12)', text: '#eab308', dot: '#eab308' },
-  High: { bg: 'rgba(239,68,68,0.12)', text: '#ef4444', dot: '#ef4444' },
+  Low: { bg: 'var(--green-bg)', text: 'var(--green)', dot: 'var(--green)' },
+  Medium: { bg: 'var(--yellow-bg)', text: 'var(--yellow)', dot: 'var(--yellow)' },
+  High: { bg: 'var(--red-bg)', text: 'var(--red)', dot: 'var(--red)' },
 };
 
 const statusColors: Record<Status, { bg: string; text: string }> = {
-  Open: { bg: 'rgba(239,68,68,0.12)', text: '#ef4444' },
-  'In Progress': { bg: 'rgba(234,179,8,0.12)', text: '#eab308' },
-  Resolved: { bg: 'rgba(34,197,94,0.12)', text: '#22c55e' },
+  Open: { bg: 'var(--red-bg)', text: 'var(--red)' },
+  'In Progress': { bg: 'var(--yellow-bg)', text: 'var(--yellow)' },
+  Resolved: { bg: 'var(--green-bg)', text: 'var(--green)' },
 };
 
 export default function Dashboard() {
@@ -95,10 +97,15 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="fade-in">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fade-in"
+    >
       {/* Page Header */}
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: 32, fontWeight: 800, marginBottom: 6 }}>
+        <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 32, fontWeight: 800, marginBottom: 6 }}>
           Issue Dashboard
         </h1>
         <p style={{ color: 'var(--muted)' }}>
@@ -125,7 +132,7 @@ export default function Dashboard() {
             <p style={{ color: 'var(--muted)', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6 }}>
               {s.label}
             </p>
-            <p style={{ fontFamily: 'Syne, sans-serif', fontSize: 28, fontWeight: 800, color: s.color }}>
+            <p style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 28, fontWeight: 800, color: s.color }}>
               {s.value}
             </p>
           </div>
@@ -145,7 +152,7 @@ export default function Dashboard() {
           alignItems: 'center',
         }}
       >
-        <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+        <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
           Filter:
         </span>
         <select
@@ -182,7 +189,7 @@ export default function Dashboard() {
               color: 'var(--muted)',
               fontSize: 13,
               cursor: 'pointer',
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'JetBrains Mono, sans-serif',
             }}
           >
             Clear ×
@@ -199,7 +206,7 @@ export default function Dashboard() {
             color: 'var(--text)',
             fontSize: 13,
             cursor: 'pointer',
-            fontFamily: 'Syne, sans-serif',
+            fontFamily: 'Rajdhani, sans-serif',
             fontWeight: 600,
           }}
         >
@@ -208,12 +215,19 @@ export default function Dashboard() {
       </div>
 
       {/* Table */}
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: 80, color: 'var(--muted)' }}>
-          <div style={{ fontSize: 32, marginBottom: 12 }}>⏳</div>
-          Loading issues...
-        </div>
-      ) : error ? (
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <motion.div 
+            key="loading"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ textAlign: 'center', padding: 80, color: 'var(--muted)' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+              <Loader2 className="animate-spin" size={48} color="var(--accent)" />
+            </div>
+            <p>Loading issues securely...</p>
+          </motion.div>
+        ) : error ? (
         <div style={{ textAlign: 'center', padding: 60, color: '#ef4444' }}>
           {error}
         </div>
@@ -223,7 +237,7 @@ export default function Dashboard() {
           style={{ borderRadius: 12, padding: 60, textAlign: 'center', color: 'var(--muted)' }}
         >
           <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
-          <p style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 700, marginBottom: 6 }}>
+          <p style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 18, fontWeight: 700, marginBottom: 6 }}>
             No issues found
           </p>
           <p style={{ fontSize: 14 }}>
@@ -231,7 +245,11 @@ export default function Dashboard() {
           </p>
         </div>
       ) : (
-        <div className="glass" style={{ borderRadius: 12, overflow: 'hidden' }}>
+        <motion.div 
+          key="table"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          className="glass" style={{ borderRadius: 12, overflow: 'hidden' }}
+        >
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
@@ -242,7 +260,7 @@ export default function Dashboard() {
                       style={{
                         padding: '14px 16px',
                         textAlign: 'left',
-                        fontFamily: 'Syne, sans-serif',
+                        fontFamily: 'Rajdhani, sans-serif',
                         fontSize: 12,
                         fontWeight: 700,
                         color: 'var(--muted)',
@@ -257,20 +275,32 @@ export default function Dashboard() {
                   ))}
                 </tr>
               </thead>
-              <tbody>
-                {filtered.map((issue, idx) => (
-                  <tr
-                    key={issue.ticketNumber}
-                    style={{
-                      borderBottom: idx < filtered.length - 1 ? '1px solid var(--border)' : 'none',
-                      transition: 'background 0.15s',
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.02)')}
+              <motion.tbody
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  visible: { transition: { staggerChildren: 0.05 } }
+                }}
+              >
+                <AnimatePresence>
+                  {filtered.map((issue, idx) => (
+                    <motion.tr
+                      key={issue.ticketNumber}
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      style={{
+                        borderBottom: idx < filtered.length - 1 ? '1px solid var(--border)' : 'none',
+                        transition: 'background 0.15s',
+                      }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hover-bg)')}
                     onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     <td style={cellStyle}>
                       <span style={{
-                        fontFamily: 'Syne, sans-serif',
+                        fontFamily: 'Rajdhani, sans-serif',
                         fontWeight: 700,
                         fontSize: 13,
                         color: 'var(--accent)',
@@ -342,18 +372,20 @@ export default function Dashboard() {
                         <option value="Resolved">Resolved</option>
                       </select>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
-              </tbody>
+                </AnimatePresence>
+              </motion.tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       <p style={{ marginTop: 16, color: 'var(--muted)', fontSize: 13, textAlign: 'right' }}>
         Showing {filtered.length} of {issues.length} issues
       </p>
-    </div>
+    </motion.div>
   );
 }
 

@@ -2,6 +2,8 @@
 
 import { useState, useRef } from 'react';
 import { IssueCategory, Urgency } from '@/types/issue';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 
 const PROPERTIES = [
   'Palm Jumeirah Villa A',
@@ -105,7 +107,10 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
   // Success State
   if (ticket) {
     return (
-      <div
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
         className="fade-in"
         style={{
           maxWidth: 520,
@@ -118,13 +123,13 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
           style={{
             borderRadius: 20,
             padding: 48,
-            border: '1px solid rgba(249,115,22,0.3)',
+            border: '1px solid var(--border)',
           }}
         >
           <div style={{ fontSize: 56, marginBottom: 16 }}>✅</div>
           <h2
             style={{
-              fontFamily: 'Syne, sans-serif',
+              fontFamily: 'Rajdhani, sans-serif',
               fontSize: 26,
               fontWeight: 800,
               marginBottom: 8,
@@ -137,8 +142,8 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
           </p>
           <div
             style={{
-              background: 'rgba(249,115,22,0.1)',
-              border: '1px solid rgba(249,115,22,0.3)',
+              background: 'var(--surface2)',
+              border: '1px solid var(--border)',
               borderRadius: 12,
               padding: '16px 24px',
               marginBottom: 32,
@@ -149,7 +154,7 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
             </p>
             <p
               style={{
-                fontFamily: 'Syne, sans-serif',
+                fontFamily: 'Rajdhani, sans-serif',
                 fontSize: 28,
                 fontWeight: 800,
                 color: 'var(--accent)',
@@ -168,7 +173,7 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
                 border: '1px solid var(--border)',
                 background: 'transparent',
                 color: 'var(--text)',
-                fontFamily: 'Syne, sans-serif',
+                fontFamily: 'Rajdhani, sans-serif',
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: 'pointer',
@@ -181,16 +186,22 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 640, margin: '0 auto' }} className="fade-in">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{ maxWidth: 640, margin: '0 auto' }} 
+      className="fade-in"
+    >
       <div style={{ marginBottom: 32 }}>
         <h1
           style={{
-            fontFamily: 'Syne, sans-serif',
+            fontFamily: 'Rajdhani, sans-serif',
             fontSize: 32,
             fontWeight: 800,
             marginBottom: 8,
@@ -255,9 +266,9 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
           <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
             {URGENCIES.map((u) => {
               const colors: Record<Urgency, string> = {
-                Low: '#22c55e',
-                Medium: '#eab308',
-                High: '#ef4444',
+                Low: 'var(--green)',
+                Medium: 'var(--yellow)',
+                High: 'var(--red)',
               };
               const selected = form.urgency === u;
               return (
@@ -341,7 +352,7 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
               textAlign: 'center',
               cursor: 'pointer',
               transition: 'all 0.2s',
-              background: photoName ? 'rgba(249,115,22,0.05)' : 'var(--surface2)',
+              background: photoName ? 'var(--hover-bg)' : 'var(--surface2)',
             }}
           >
             <input
@@ -370,11 +381,11 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
         {errors.submit && (
           <div
             style={{
-              background: 'rgba(239,68,68,0.1)',
-              border: '1px solid rgba(239,68,68,0.3)',
+              background: 'var(--red-bg)',
+              border: '1px solid var(--border)',
               borderRadius: 8,
               padding: '12px 16px',
-              color: '#ef4444',
+              color: 'var(--red)',
               fontSize: 14,
             }}
           >
@@ -386,18 +397,23 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
           className="btn-primary"
           onClick={handleSubmit}
           disabled={loading}
-          style={{ width: '100%', padding: '14px', fontSize: 16 }}
+          style={{ width: '100%', padding: '14px', fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}
         >
-          {loading ? '⏳ Submitting...' : 'Submit Issue →'}
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin" size={20} />
+              Submitting...
+            </>
+          ) : 'Submit Issue →'}
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 const labelStyle: React.CSSProperties = {
   display: 'block',
-  fontFamily: 'Syne, sans-serif',
+  fontFamily: 'Rajdhani, sans-serif',
   fontWeight: 600,
   fontSize: 13,
   color: 'var(--muted)',
