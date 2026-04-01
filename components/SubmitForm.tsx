@@ -393,19 +393,41 @@ export default function SubmitForm({ onSubmitted, onViewDashboard }: Props) {
           </div>
         )}
 
-        <button
-          className="btn-primary"
-          onClick={handleSubmit}
-          disabled={loading}
-          style={{ width: '100%', padding: '14px', fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="animate-spin" size={20} />
-              Submitting...
-            </>
-          ) : 'Submit Issue →'}
-        </button>
+<div style={{ display: 'flex', gap: 12 }}>
+          <button
+            onClick={handleReset}
+            disabled={loading}
+            style={{
+              flex: '0 0 auto',
+              padding: '14px 22px',
+              fontSize: 15,
+              borderRadius: 8,
+              border: '1px solid var(--border)',
+              background: 'transparent',
+              color: 'var(--muted)',
+              fontFamily: 'Rajdhani, sans-serif',
+              fontWeight: 600,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.5 : 1,
+              transition: 'all 0.2s',
+            }}
+          >
+            Clear
+          </button>
+          <button
+            className="btn-primary"
+            onClick={handleSubmit}
+            disabled={loading}
+            style={{ flex: 1, padding: '14px', fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Submitting...
+              </>
+            ) : 'Submit Issue →'}
+          </button>
+        </div>
       </div>
     </motion.div>
   );
